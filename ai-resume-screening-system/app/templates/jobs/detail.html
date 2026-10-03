@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }} - Job Intelligence{% endblock %}
+{% block page_title %}{{ job.title }}{% endblock %}
+{% block page_subtitle %}{{ job.department }} • {{ job.location }} • {{ job.experience_level }} ({{ job.min_experience_years }}+ Yrs){% endblock %}
+
+{% block content %}
+<!-- Job Overview Card -->
+<div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div style="flex: 1; min-width: 280px;">
+            <div style="margin-bottom: 1.25rem;">
+                <span class="badge {{ job.status | status_badge_class }}" style="margin-right: 0.5rem;">{{ job.status }}</span>
+                <span class="badge badge-secondary">{{ job.min_education }} Minimum</span>
+                <span class="badge badge-info">{{ job.candidate_count }} Candidates Screened</span>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <h4 style="font-size: 0.82rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Required Core Skills</h4>
+                <div>
+                    {% for skill in job.required_skills %}
+                    <span class="skill-tag" style="font-size: 0.82rem;">{{ skill }}</span>
+                    {% else %}
+                    <span style="color: var(--text-dim); font-size: 0.85rem;">None specified</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if job.preferred_skills %}
+            <div style="margin-bottom: 1.5rem;">
+                <h4 style="font-size: 0.82rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Preferred / Bonus Skills</h4>
+                <div>
+                    {% for skill in job.preferred_skills %}
+                    <span class="skill-tag" style="background: rgba(139, 92, 246, 0.12); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.25); font-size: 0.82rem;">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+            <a href="{{ url_for('resumes.screening', job_id=job.id) }}" class="btn btn-primary btn-sm">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Screen Resumes
+            </a>
+            <a href="{{ url_for('jobs.edit', id=job.id) }}" class="btn btn-secondary btn-sm">
+                Edit Job
+            </a>
+            <form method="POST" action="{{ url_for('jobs.delete', id=job.id) }}" onsubmit="return confirm('Are you sure you want to delete this job posting and its candidate screenings?');" style="display: inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--danger);">
+                    Delete
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Collapsible Description Box -->
+    <details style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle);">
+        <summary style="cursor: pointer; color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">
+            View Full Job Description Text
+        </summary>
+        <div style="margin-top: 0.75rem; font-size: 0.88rem; color: var(--text-main); line-height: 1.6; white-space: pre-wrap; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: var(--radius-md);">{{ job.description_text }}</div>
+    </details>
+</div>
+
+<!-- Screened Candidates Table -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Ranked Candidate Pool ({{ screenings | length }})
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th style="width: 60px;">Rank</th>
+                    <th>Candidate</th>
+                    <th style="text-align: center;">Match Score</th>
+                    <th style="text-align: center;">ATS Score</th>
+                    <th style="text-align: center;">Combined</th>
+                    <th>Matched Skills</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for screening in screenings %}
+                <tr>
+                    <td>
+                        <span class="rank-badge {% if screening.rank == 1 %}top-1{% elif screening.rank == 2 %}top-2{% elif screening.rank == 3 %}top-3{% endif %}">
+                            {{ screening.rank }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="candidate-cell">
+                            <div class="avatar-chip">{{ screening.resume.candidate_name[:2].upper() }}</div>
+                            <div class="candidate-meta">
+                                <h4>
+                                    <a href="{{ url_for('candidates.detail', id=screening.id) }}" style="color: var(--text-white);">
+                                        {{ screening.resume.candidate_name }}
+                                    </a>
+                                </h4>
+                                <span>{{ screening.resume.email or 'No email' }} • {{ screening.resume.experience_years }} yrs exp</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge {{ screening.match_score | score_badge_class }}">
+                            {{ screening.match_score }}%
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge {{ screening.ats_score | score_badge_class }}">
+                            {{ screening.ats_score }}%
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <strong style="color: #a78bfa; font-size: 0.95rem;">
+                            {{ screening.combined_score }}%
+                        </strong>
+                    </td>
+                    <td style="max-width: 250px;">
+                        {% for skill in screening.matched_skills[:3] %}
+                        <span class="skill-tag matched" style="font-size: 0.72rem;">{{ skill }}</span>
+                        {% endfor %}
+                        {% if screening.matched_skills | length > 3 %}
+                        <span style="font-size: 0.7rem; color: var(--text-dim);">+{{ screening.matched_skills | length - 3 }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge {{ screening.status | status_badge_class }}">
+                            {{ screening.status | replace('_', ' ') }}
+                        </span>
+                    </td>
+                    <td style="text-align: right;">
+                        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.4rem;">
+                            <a href="{{ url_for('candidates.detail', id=screening.id) }}" class="btn btn-secondary btn-sm">
+                                Profile &rarr;
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                        <p style="margin-bottom: 1rem;">No candidates screened for this job yet.</p>
+                        <a href="{{ url_for('resumes.screening', job_id=job.id) }}" class="btn btn-primary btn-sm">Upload & Screen Candidates</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

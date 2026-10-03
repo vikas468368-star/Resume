@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In - AI Resume Screening System{% endblock %}
+
+{% block content %}
+<div style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem;">
+    <div class="card" style="width: 100%; max-width: 440px; border-color: rgba(99, 102, 241, 0.3); box-shadow: var(--glow-shadow);">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="brand-icon" style="margin: 0 auto 1rem; width: 52px; height: 52px;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+            </div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-white);">Welcome Back</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.25rem;">Sign in to your recruitment dashboard</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div class="form-group">
+                <label class="form-label" for="email">Work Email</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="name@company.com" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; font-size: 0.85rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); cursor: pointer;">
+                    <input type="checkbox" name="remember" style="accent-color: var(--primary);"> Remember me
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem;">
+                Sign In
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); font-size: 0.88rem; color: var(--text-muted);">
+            Don't have an account? 
+            <a href="{{ url_for('auth.register') }}" style="color: var(--accent-purple); font-weight: 600;">Create Account</a>
+        </div>
+
+        <!-- Quick Demo Credentials Box -->
+        <div style="margin-top: 1.5rem; padding: 0.85rem; background: rgba(255,255,255,0.02); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); font-size: 0.78rem; color: var(--text-dim);">
+            <strong style="color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Demo Credentials:</strong>
+            <div>Admin: <code style="color: var(--accent-cyan);">admin@resumescreen.ai</code> / <code style="color: var(--accent-cyan);">Admin@123</code></div>
+            <div>Recruiter: <code style="color: var(--accent-purple);">recruiter@resumescreen.ai</code> / <code style="color: var(--accent-purple);">Recruiter@123</code></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

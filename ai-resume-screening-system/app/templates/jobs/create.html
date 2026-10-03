@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Create Job Description - AI Resume Screening{% endblock %}
+{% block page_title %}Create Job Description{% endblock %}
+{% block page_subtitle %}Define role expectations, required skill criteria, and experience standards{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div class="card">
+        <form method="POST" action="{{ url_for('jobs.create') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label" for="title">Job Title *</label>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Senior Full-Stack Python Engineer" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="department">Department</label>
+                    <input type="text" id="department" name="department" class="form-control" placeholder="e.g. Engineering / Product" value="Engineering">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label" for="location">Location</label>
+                    <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Remote / New York" value="Remote">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="experience_level">Seniority Level</label>
+                    <select id="experience_level" name="experience_level" class="form-control">
+                        <option value="Entry-Level">Entry-Level</option>
+                        <option value="Mid-Level">Mid-Level</option>
+                        <option value="Mid-Senior" selected>Mid-Senior</option>
+                        <option value="Senior">Senior</option>
+                        <option value="Lead / Principal">Lead / Principal</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="min_experience_years">Min Experience (Yrs)</label>
+                    <input type="number" id="min_experience_years" name="min_experience_years" class="form-control" step="0.5" min="0" max="30" value="3.0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="min_education">Min Education</label>
+                    <select id="min_education" name="min_education" class="form-control">
+                        <option value="High School">High School</option>
+                        <option value="Associate / Diploma">Associate / Diploma</option>
+                        <option value="Bachelor" selected>Bachelor's Degree</option>
+                        <option value="Master">Master's Degree</option>
+                        <option value="Ph.D.">Ph.D. / Doctorate</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.45rem;">
+                    <label class="form-label" for="description_text" style="margin-bottom: 0;">Full Job Description Text *</label>
+                    <button type="button" id="autoExtractBtn" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                        Auto-Extract Skills
+                    </button>
+                </div>
+                <textarea id="description_text" name="description_text" class="form-control" style="min-height: 220px;" placeholder="Paste the comprehensive job description, role overview, technical requirements, responsibilities, and qualifications..." required></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label" for="required_skills">
+                        Required Core Skills <span style="color: var(--text-dim); font-weight: normal;">(Comma-separated)</span>
+                    </label>
+                    <input type="text" id="required_skills" name="required_skills" class="form-control" placeholder="e.g. Python, Flask, PostgreSQL, Docker, RESTful APIs">
+                    <span style="font-size: 0.75rem; color: var(--text-dim);">Carries 80% weight in skill matching.</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="preferred_skills">
+                        Preferred / Bonus Skills <span style="color: var(--text-dim); font-weight: normal;">(Comma-separated)</span>
+                    </label>
+                    <input type="text" id="preferred_skills" name="preferred_skills" class="form-control" placeholder="e.g. AWS, Kubernetes, Redis, Celery, CI/CD">
+                    <span style="font-size: 0.75rem; color: var(--text-dim);">Carries 20% bonus weight in skill matching.</span>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle);">
+                <a href="{{ url_for('jobs.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Save & Publish Job
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('autoExtractBtn').addEventListener('click', () => {
+    const text = document.getElementById('description_text').value;
+    if (!text.trim()) {
+        alert('Please paste job description text first.');
+        return;
+    }
+    
+    fetch('/jobs/api/extract-skills', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ text: text })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.required && data.required.length > 0) {
+            document.getElementById('required_skills').value = data.required.join(', ');
+        }
+        if (data.preferred && data.preferred.length > 0) {
+            document.getElementById('preferred_skills').value = data.preferred.join(', ');
+        }
+    })
+    .catch(err => console.error('Skill extraction error:', err));
+});
+</script>
+{% endblock %}

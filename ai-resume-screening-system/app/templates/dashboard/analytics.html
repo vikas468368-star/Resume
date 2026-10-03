@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Recruitment Analytics - AI Resume Screening{% endblock %}
+{% block page_title %}Recruitment Analytics{% endblock %}
+{% block page_subtitle %}In-depth talent pipeline metrics, score distributions, and role conversion rates{% endblock %}
+
+{% block content %}
+<!-- Top Analytics Charts -->
+<div class="charts-grid" style="margin-bottom: 2rem;">
+    <!-- Match Score Distribution -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10h-10z"></path></svg>
+                Candidate Match Tiers
+            </div>
+            <span style="font-size: 0.78rem; color: var(--text-dim);">Quality Distribution</span>
+        </div>
+        <div style="position: relative; height: 260px;">
+            <canvas id="matchDonutChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Candidate Pipeline Status -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                Pipeline Funnel Status
+            </div>
+            <span style="font-size: 0.78rem; color: var(--text-dim);">Status Breakdown</span>
+        </div>
+        <div style="position: relative; height: 260px;">
+            <canvas id="statusDonutChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Candidate Screening Velocity -->
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+        <div class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            Daily Resume Ingestion Velocity
+        </div>
+        <span style="font-size: 0.78rem; color: var(--text-dim);">Last 7 Days</span>
+    </div>
+    <div style="position: relative; height: 240px;">
+        <canvas id="candidateTrendChart"></canvas>
+    </div>
+</div>
+
+<!-- Job Descriptions Performance Table -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            Job Requisition Performance
+        </div>
+        <a href="{{ url_for('jobs.create') }}" class="btn btn-secondary btn-sm">
+            Post New Job
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Department</th>
+                    <th style="text-align: center;">Candidates</th>
+                    <th style="text-align: center;">Avg Match</th>
+                    <th style="text-align: center;">Avg ATS</th>
+                    <th style="text-align: center;">Shortlisted</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in job_metrics %}
+                <tr>
+                    <td>
+                        <div>
+                            <strong style="color: var(--text-white);">{{ item.job.title }}</strong>
+                            <div style="font-size: 0.76rem; color: var(--text-muted);">{{ item.job.location }} • {{ item.job.experience_level }}</div>
+                        </div>
+                    </td>
+                    <td><span class="badge badge-secondary">{{ item.job.department }}</span></td>
+                    <td style="text-align: center; font-weight: 600;">{{ item.candidate_count }}</td>
+                    <td style="text-align: center;">
+                        <span class="badge {{ item.avg_match | score_badge_class }}">
+                            {{ item.avg_match }}%
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge {{ item.avg_ats | score_badge_class }}">
+                            {{ item.avg_ats }}%
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge badge-success" style="font-weight: 700;">{{ item.shortlisted_count }}</span>
+                    </td>
+                    <td style="text-align: right;">
+                        <a href="{{ url_for('jobs.detail', id=item.job.id) }}" class="btn btn-secondary btn-sm">
+                            View Pool
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+                        No job descriptions found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

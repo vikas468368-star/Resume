@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ job.title }} - AI Resume Screening{% endblock %}
+{% block page_title %}Edit Job Description{% endblock %}
+{% block page_subtitle %}Update role criteria and skill specifications{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div class="card">
+        <form method="POST" action="{{ url_for('jobs.edit', id=job.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label" for="title">Job Title *</label>
+                    <input type="text" id="title" name="title" class="form-control" value="{{ job.title }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="department">Department</label>
+                    <input type="text" id="department" name="department" class="form-control" value="{{ job.department }}">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label" for="location">Location</label>
+                    <input type="text" id="location" name="location" class="form-control" value="{{ job.location }}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="experience_level">Seniority Level</label>
+                    <select id="experience_level" name="experience_level" class="form-control">
+                        <option value="Entry-Level" {% if job.experience_level == 'Entry-Level' %}selected{% endif %}>Entry-Level</option>
+                        <option value="Mid-Level" {% if job.experience_level == 'Mid-Level' %}selected{% endif %}>Mid-Level</option>
+                        <option value="Mid-Senior" {% if job.experience_level == 'Mid-Senior' %}selected{% endif %}>Mid-Senior</option>
+                        <option value="Senior" {% if job.experience_level == 'Senior' %}selected{% endif %}>Senior</option>
+                        <option value="Lead / Principal" {% if job.experience_level == 'Lead / Principal' %}selected{% endif %}>Lead / Principal</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="min_experience_years">Min Experience (Yrs)</label>
+                    <input type="number" id="min_experience_years" name="min_experience_years" class="form-control" step="0.5" min="0" max="30" value="{{ job.min_experience_years }}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="min_education">Min Education</label>
+                    <select id="min_education" name="min_education" class="form-control">
+                        <option value="High School" {% if job.min_education == 'High School' %}selected{% endif %}>High School</option>
+                        <option value="Associate / Diploma" {% if job.min_education == 'Associate / Diploma' %}selected{% endif %}>Associate / Diploma</option>
+                        <option value="Bachelor" {% if job.min_education == 'Bachelor' %}selected{% endif %}>Bachelor's Degree</option>
+                        <option value="Master" {% if job.min_education == 'Master' %}selected{% endif %}>Master's Degree</option>
+                        <option value="Ph.D." {% if job.min_education == 'Ph.D.' %}selected{% endif %}>Ph.D. / Doctorate</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="status">Job Status</label>
+                <select id="status" name="status" class="form-control" style="max-width: 240px;">
+                    <option value="active" {% if job.status == 'active' %}selected{% endif %}>Active (Accepting Candidates)</option>
+                    <option value="closed" {% if job.status == 'closed' %}selected{% endif %}>Closed / Filled</option>
+                    <option value="draft" {% if job.status == 'draft' %}selected{% endif %}>Draft</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="description_text">Job Description Text *</label>
+                <textarea id="description_text" name="description_text" class="form-control" style="min-height: 220px;" required>{{ job.description_text }}</textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label" for="required_skills">
+                        Required Core Skills <span style="color: var(--text-dim); font-weight: normal;">(Comma-separated)</span>
+                    </label>
+                    <input type="text" id="required_skills" name="required_skills" class="form-control" value="{{ job.required_skills | join(', ') }}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="preferred_skills">
+                        Preferred / Bonus Skills <span style="color: var(--text-dim); font-weight: normal;">(Comma-separated)</span>
+                    </label>
+                    <input type="text" id="preferred_skills" name="preferred_skills" class="form-control" value="{{ job.preferred_skills | join(', ') }}">
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle);">
+                <a href="{{ url_for('jobs.detail', id=job.id) }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

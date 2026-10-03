@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Register - AI Resume Screening System{% endblock %}
+
+{% block content %}
+<div style="min-height: 85vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem;">
+    <div class="card" style="width: 100%; max-width: 480px; border-color: rgba(99, 102, 241, 0.3); box-shadow: var(--glow-shadow);">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="brand-icon" style="margin: 0 auto 1rem; width: 52px; height: 52px;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+            </div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-white);">Create Recruiter Account</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.25rem;">Start screening candidates with AI precision</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div class="form-group">
+                <label class="form-label" for="name">Full Name</label>
+                <input type="text" id="name" name="name" class="form-control" placeholder="Jane Doe" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Work Email</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="jane@company.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="role">Account Role</label>
+                <select id="role" name="role" class="form-control">
+                    <option value="recruiter">Recruiter (Screen & manage own jobs)</option>
+                    <option value="admin">Administrator (Full system management)</option>
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required minlength="6">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="••••••••" required minlength="6">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; margin-top: 0.5rem;">
+                Create Account
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); font-size: 0.88rem; color: var(--text-muted);">
+            Already have an account? 
+            <a href="{{ url_for('auth.login') }}" style="color: var(--accent-purple); font-weight: 600;">Sign In</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: ai-resume-screening-system
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python -m spacy download en_core_web_sm && python seed.py"
+    startCommand: "gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: resume-screener-db
+          property: connectionString
+
+databases:
+  - name: resume-screener-db
+    plan: free
+    region: oregon

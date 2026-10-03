@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}File Too Large - AI Resume Screening{% endblock %}
+
+{% block content %}
+<div style="min-height: 70vh; display: flex; align-items: center; justify-content: center; text-align: center;">
+    <div class="card" style="max-width: 460px; padding: 3rem 2rem;">
+        <h1 style="font-size: 4rem; font-weight: 800; color: #ef4444; margin-bottom: 0.5rem;">413</h1>
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-white); margin-bottom: 0.75rem;">Resume File Too Large</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.75rem;">The uploaded resume file exceeds the maximum allowed size of 16MB. Please compress or optimize your document.</p>
+        <a href="{{ url_for('resumes.screening') }}" class="btn btn-primary">
+            Try Uploading Again
+        </a>
+    </div>
+</div>
+{% endblock %}

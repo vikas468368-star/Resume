@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}403 Forbidden - AI Resume Screening{% endblock %}
+
+{% block content %}
+<div style="min-height: 70vh; display: flex; align-items: center; justify-content: center; text-align: center;">
+    <div class="card" style="max-width: 460px; padding: 3rem 2rem;">
+        <h1 style="font-size: 4rem; font-weight: 800; color: #ef4444; margin-bottom: 0.5rem;">403</h1>
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-white); margin-bottom: 0.75rem;">Access Forbidden</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.75rem;">You do not have permission to access or modify this requisition or candidate record.</p>
+        <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary">
+            Return to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

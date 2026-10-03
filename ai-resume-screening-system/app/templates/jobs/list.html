@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Job Descriptions - AI Resume Screening{% endblock %}
+{% block page_title %}Job Descriptions{% endblock %}
+{% block page_subtitle %}Manage role requirements, required skill sets, and screening targets{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+        <div class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            Active Job Requisitions
+        </div>
+        <a href="{{ url_for('jobs.create') }}" class="btn btn-primary btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Create New Job
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Job Title & Location</th>
+                    <th>Department</th>
+                    <th>Experience Req.</th>
+                    <th>Required Skills</th>
+                    <th style="text-align: center;">Candidates</th>
+                    <th style="text-align: center;">Top Match</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>
+                        <div>
+                            <h4>
+                                <a href="{{ url_for('jobs.detail', id=job.id) }}" style="color: var(--text-white); font-weight: 600;">
+                                    {{ job.title }}
+                                </a>
+                            </h4>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">
+                                {{ job.location }} • Posted {{ job.created_at | format_datetime }}
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-secondary">{{ job.department }}</span>
+                    </td>
+                    <td>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">
+                            {{ job.min_experience_years }}+ Years ({{ job.min_education }})
+                        </span>
+                    </td>
+                    <td style="max-width: 280px;">
+                        {% for skill in job.required_skills[:3] %}
+                        <span class="skill-tag">{{ skill }}</span>
+                        {% endfor %}
+                        {% if job.required_skills | length > 3 %}
+                        <span style="font-size: 0.75rem; color: var(--text-dim);">+{{ job.required_skills | length - 3 }} more</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge badge-info" style="font-weight: 700;">{{ job.candidate_count }}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        {% if job.top_candidate %}
+                        <span class="badge {{ job.top_candidate.match_score | score_badge_class }}">
+                            {{ job.top_candidate.match_score }}%
+                        </span>
+                        {% else %}
+                        <span style="color: var(--text-dim); font-size: 0.8rem;">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge {{ job.status | status_badge_class }}">{{ job.status }}</span>
+                    </td>
+                    <td style="text-align: right;">
+                        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.4rem;">
+                            <a href="{{ url_for('resumes.screening', job_id=job.id) }}" class="btn btn-primary btn-sm" title="Screen Candidates for this Job">
+                                Screen
+                            </a>
+                            <a href="{{ url_for('jobs.detail', id=job.id) }}" class="btn btn-secondary btn-sm" title="View Details">
+                                View
+                            </a>
+                            <a href="{{ url_for('jobs.edit', id=job.id) }}" class="btn btn-secondary btn-sm" title="Edit Job">
+                                Edit
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                        <p style="margin-bottom: 1rem;">No job descriptions created yet.</p>
+                        <a href="{{ url_for('jobs.create') }}" class="btn btn-primary btn-sm">Create First Job</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

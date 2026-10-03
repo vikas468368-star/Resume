@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Candidate Intelligence Directory - AI Resume Screening{% endblock %}
+{% block page_title %}Candidate Directory{% endblock %}
+{% block page_subtitle %}Search, filter, and inspect scored candidates across all active requisitions{% endblock %}
+
+{% block content %}
+<!-- Search & Filter Controls -->
+<form method="GET" action="{{ url_for('candidates.index') }}" class="filter-bar">
+    <div class="search-input">
+        <input type="text" name="q" class="form-control" placeholder="Search candidate name, email, skills..." value="{{ search_query }}">
+    </div>
+
+    <div>
+        <select name="job_id" class="form-control" style="min-width: 180px;">
+            <option value="">All Requisitions</option>
+            {% for job in jobs %}
+            <option value="{{ job.id }}" {% if selected_job_id == job.id %}selected{% endif %}>{{ job.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <select name="status" class="form-control">
+            <option value="all">All Statuses</option>
+            <option value="new" {% if selected_status == 'new' %}selected{% endif %}>New</option>
+            <option value="shortlisted" {% if selected_status == 'shortlisted' %}selected{% endif %}>Shortlisted</option>
+            <option value="in_review" {% if selected_status == 'in_review' %}selected{% endif %}>In Review</option>
+            <option value="rejected" {% if selected_status == 'rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+    </div>
+
+    <div>
+        <select name="score_tier" class="form-control">
+            <option value="">All Score Tiers</option>
+            <option value="90" {% if selected_tier == '90' %}selected{% endif %}>90-100% Match</option>
+            <option value="70" {% if selected_tier == '70' %}selected{% endif %}>70-89% Match</option>
+            <option value="50" {% if selected_tier == '50' %}selected{% endif %}>50-69% Match</option>
+            <option value="below50" {% if selected_tier == 'below50' %}selected{% endif %}>Below 50%</option>
+        </select>
+    </div>
+
+    <div>
+        <select name="sort" class="form-control">
+            <option value="combined_score" {% if sort_by == 'combined_score' %}selected{% endif %}>Sort: Combined Score</option>
+            <option value="match_score" {% if sort_by == 'match_score' %}selected{% endif %}>Sort: Match Score</option>
+            <option value="ats_score" {% if sort_by == 'ats_score' %}selected{% endif %}>Sort: ATS Score</option>
+            <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort: Candidate Name</option>
+            <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Sort: Screened Date</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-sm">
+        Filter
+    </button>
+    <a href="{{ url_for('candidates.index') }}" class="btn btn-secondary btn-sm">Reset</a>
+</form>
+
+<!-- Candidates List Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">Rank</th>
+                    <th>Candidate</th>
+                    <th>Job Title</th>
+                    <th>Top Extracted Skills</th>
+                    <th style="text-align: center;">Match Score</th>
+                    <th style="text-align: center;">ATS Score</th>
+                    <th style="text-align: center;">Combined</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for screening in screenings %}
+                <tr>
+                    <td>
+                        <span class="rank-badge {% if screening.rank == 1 %}top-1{% elif screening.rank == 2 %}top-2{% elif screening.rank == 3 %}top-3{% endif %}">
+                            {{ screening.rank }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="candidate-cell">
+                            <div class="avatar-chip">{{ screening.resume.candidate_name[:2].upper() }}</div>
+                            <div class="candidate-meta">
+                                <h4>
+                                    <a href="{{ url_for('candidates.detail', id=screening.id) }}" style="color: var(--text-white);">
+                                        {{ screening.resume.candidate_name }}
+                                    </a>
+                                </h4>
+                                <span>{{ screening.resume.email or 'No email' }} • {{ screening.resume.location or 'Remote' }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="color: var(--text-muted); font-size: 0.85rem;">{{ screening.job.title }}</span>
+                    </td>
+                    <td style="max-width: 250px;">
+                        {% for skill in screening.resume.extracted_skills[:3] %}
+                        <span class="skill-tag" style="font-size: 0.72rem;">{{ skill }}</span>
+                        {% endfor %}
+                        {% if screening.resume.extracted_skills | length > 3 %}
+                        <span style="font-size: 0.7rem; color: var(--text-dim);">+{{ screening.resume.extracted_skills | length - 3 }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge {{ screening.match_score | score_badge_class }}">
+                            {{ screening.match_score }}%
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge {{ screening.ats_score | score_badge_class }}">
+                            {{ screening.ats_score }}%
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <strong style="color: #a78bfa; font-size: 0.95rem;">
+                            {{ screening.combined_score }}%
+                        </strong>
+                    </td>
+                    <td>
+                        <span class="badge {{ screening.status | status_badge_class }}">
+                            {{ screening.status | replace('_', ' ') }}
+                        </span>
+                    </td>
+                    <td style="text-align: right;">
+                        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.4rem;">
+                            <a href="{{ url_for('candidates.detail', id=screening.id) }}" class="btn btn-secondary btn-sm">
+                                Profile &rarr;
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                        No candidates match your current filter parameters.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    {% if pagination and pagination.pages > 1 %}
+    <ul class="pagination">
+        {% if pagination.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('candidates.index', page=pagination.prev_num, q=search_query, job_id=selected_job_id, status=selected_status, score_tier=selected_tier, sort=sort_by) }}">&laquo;</a>
+        </li>
+        {% endif %}
+
+        {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if p %}
+                <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('candidates.index', page=p, q=search_query, job_id=selected_job_id, status=selected_status, score_tier=selected_tier, sort=sort_by) }}">{{ p }}</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">…</span></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if pagination.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('candidates.index', page=pagination.next_num, q=search_query, job_id=selected_job_id, status=selected_status, score_tier=selected_tier, sort=sort_by) }}">&raquo;</a>
+        </li>
+        {% endif %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

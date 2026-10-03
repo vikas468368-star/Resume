@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Recruiter Dashboard - AI Resume Screening{% endblock %}
+{% block page_title %}Recruiter Dashboard{% endblock %}
+{% block page_subtitle %}Live candidate intelligence, match scoring, and ATS ranking analytics{% endblock %}
+
+{% block content %}
+<!-- Top Statistics KPI Grid -->
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-icon blue">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        </div>
+        <div class="kpi-content">
+            <h3>{{ stats.total_resumes }}</h3>
+            <p>Total Resumes Processed</p>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-icon green">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </div>
+        <div class="kpi-content">
+            <h3>{{ stats.shortlisted_count }}</h3>
+            <p>Shortlisted Candidates</p>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-icon purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <div class="kpi-content">
+            <h3>{{ stats.avg_match_score }}%</h3>
+            <p>Average Match Score</p>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-icon amber">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+        </div>
+        <div class="kpi-content">
+            <h3>{{ stats.avg_ats_score }}%</h3>
+            <p>Average ATS Score</p>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="charts-grid">
+    <!-- Match Distribution Donut -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10h-10z"></path></svg>
+                Match Score Distribution
+            </div>
+            <span style="font-size: 0.78rem; color: var(--text-dim);">Live Tiers</span>
+        </div>
+        <div style="position: relative; height: 260px;">
+            <canvas id="matchDonutChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Candidate Submissions Line Chart -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                Screening Velocity
+            </div>
+            <span style="font-size: 0.78rem; color: var(--text-dim);">Last 7 Days</span>
+        </div>
+        <div style="position: relative; height: 260px;">
+            <canvas id="candidateTrendChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Top Candidates Table Section -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Top Ranked Candidates
+        </div>
+        <a href="{{ url_for('candidates.index') }}" class="btn btn-secondary btn-sm">
+            View All Candidates &rarr;
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th style="width: 60px;">Rank</th>
+                    <th>Candidate</th>
+                    <th>Target Role</th>
+                    <th style="text-align: center;">Match Score</th>
+                    <th style="text-align: center;">ATS Score</th>
+                    <th style="text-align: center;">Combined</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for screening in top_screenings %}
+                <tr>
+                    <td>
+                        <span class="rank-badge {% if screening.rank == 1 %}top-1{% elif screening.rank == 2 %}top-2{% elif screening.rank == 3 %}top-3{% endif %}">
+                            {{ screening.rank }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="candidate-cell">
+                            <div class="avatar-chip">{{ screening.resume.candidate_name[:2].upper() }}</div>
+                            <div class="candidate-meta">
+                                <h4>
+                                    <a href="{{ url_for('candidates.detail', id=screening.id) }}" style="color: var(--text-white);">
+                                        {{ screening.resume.candidate_name }}
+                                    </a>
+                                </h4>
+                                <span>{{ screening.resume.email or 'No email provided' }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="color: var(--text-muted); font-size: 0.85rem;">{{ screening.job.title }}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge {{ screening.match_score | score_badge_class }}">
+                            {{ screening.match_score }}%
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge {{ screening.ats_score | score_badge_class }}">
+                            {{ screening.ats_score }}%
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <strong style="color: #a78bfa; font-size: 0.95rem;">
+                            {{ screening.combined_score }}%
+                        </strong>
+                    </td>
+                    <td>
+                        <span class="badge {{ screening.status | status_badge_class }}">
+                            {{ screening.status | replace('_', ' ') }}
+                        </span>
+                    </td>
+                    <td style="text-align: right;">
+                        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.4rem;">
+                            <a href="{{ url_for('candidates.detail', id=screening.id) }}" class="btn btn-secondary btn-sm" title="View Full Analysis">
+                                View
+                            </a>
+                            
+                            {% if screening.status != 'shortlisted' %}
+                            <form method="POST" action="{{ url_for('candidates.update_status', id=screening.id) }}" style="display: inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="status" value="shortlisted">
+                                <button type="submit" class="btn btn-sm" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);" title="Shortlist Candidate">
+                                    Shortlist
+                                </button>
+                            </form>
+                            {% endif %}
+
+                            {% if screening.status != 'rejected' %}
+                            <form method="POST" action="{{ url_for('candidates.update_status', id=screening.id) }}" style="display: inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="status" value="rejected">
+                                <button type="submit" class="btn btn-sm" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);" title="Reject Candidate">
+                                    Reject
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+                        <p style="margin-bottom: 1rem;">No candidate screenings available yet.</p>
+                        <a href="{{ url_for('resumes.screening') }}" class="btn btn-primary btn-sm">Upload Resumes to Screen</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
