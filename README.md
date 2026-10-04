@@ -50,7 +50,7 @@ Instead of manually going through every resume, recruiters can use AI-assisted a
 <tr>
 <td width="50%">
 
-### 📄 Resume Processing
+###  Resume Processing
 - Resume upload
 - Resume text extraction
 - Document preprocessing
