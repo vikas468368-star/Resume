@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🚀 AI RESUME SCREENING SYSTEM
+# AI RESUME SCREENING SYSTEM
 
-### 🤖 Intelligent Resume Analysis • NLP • Machine Learning • Automated Screening
+###  Intelligent Resume Analysis • NLP • Machine Learning • Automated Screening
 
 <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&pause=1000&color=00C6FF&center=true&vCenter=true&width=650&lines=AI-Powered+Resume+Screening;Intelligent+Candidate+Analysis;NLP+%2B+Machine+Learning;Automating+Modern+Recruitment" alt="Typing Animation" />
 
@@ -25,7 +25,7 @@
 
 ---
 
-## 🌟 Overview
+##  Overview
 
 **AI Resume Screening System** is an intelligent recruitment-support application designed to automate the initial analysis of candidate resumes.
 
@@ -33,18 +33,18 @@ The system processes resume information, extracts relevant content, compares can
 
 Instead of manually going through every resume, recruiters can use AI-assisted analysis to quickly understand:
 
-- 📄 Candidate resume information
-- 🧠 Relevant skills
-- 🎯 Job-description matching
-- 📊 Candidate compatibility
-- 🔍 Resume strengths and gaps
-- 📈 Screening results
+-  Candidate resume information
+-  Relevant skills
+-  Job-description matching
+-  Candidate compatibility
+-  Resume strengths and gaps
+-  Screening results
 
 > **Goal:** Build a smarter, faster and data-driven approach to the initial resume screening process.
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
 <table>
 <tr>
@@ -60,7 +60,7 @@ Instead of manually going through every resume, recruiters can use AI-assisted a
 
 <td width="50%">
 
-### 🧠 AI & NLP
+###  AI & NLP
 - Natural Language Processing
 - Text preprocessing
 - Skill identification
@@ -72,7 +72,7 @@ Instead of manually going through every resume, recruiters can use AI-assisted a
 <tr>
 <td>
 
-### 🎯 Job Matching
+### Job Matching
 - Job description analysis
 - Resume-to-job comparison
 - Relevant skill matching
@@ -82,7 +82,7 @@ Instead of manually going through every resume, recruiters can use AI-assisted a
 
 <td>
 
-### 📊 Screening
+###  Screening
 - Candidate analysis
 - Matching scores
 - Screening results
@@ -94,7 +94,7 @@ Instead of manually going through every resume, recruiters can use AI-assisted a
 
 ---
 
-# 🧠 How It Works
+#  How It Works
 
 ```text
                  ┌───────────────────────┐
@@ -133,25 +133,25 @@ Instead of manually going through every resume, recruiters can use AI-assisted a
 
 ---
 
-# 🛠️ Technology Stack
+#  Technology Stack
 
 <div align="center">
 
 | Technology | Purpose |
 |---|---|
-| 🐍 **Python** | Core development |
-| 🧠 **Machine Learning** | Candidate analysis |
-| 🔤 **NLP** | Resume text processing |
-| 📄 **PDF/DOC Processing** | Resume extraction |
-| ⚙️ **Backend Framework** | Application/API services |
-| 🗄️ **Database** | Candidate/result storage |
-| 🌐 **HTML / CSS / JavaScript** | User interface |
+|  **Python** | Core development |
+| **Machine Learning** | Candidate analysis |
+| **NLP** | Resume text processing |
+| **PDF/DOC Processing** | Resume extraction |
+| **Backend Framework** | Application/API services |
+| **Database** | Candidate/result storage |
+| **HTML / CSS / JavaScript** | User interface |
 
 </div>
 
 ---
 
-# 🏗️ System Architecture
+# System Architecture
 
 ```text
                     ┌────────────────────┐
@@ -190,7 +190,7 @@ Instead of manually going through every resume, recruiters can use AI-assisted a
 
 ---
 
-# 📂 Project Structure
+# Project Structure
 
 ```text
 ai-resume-screening-system/
@@ -221,21 +221,21 @@ ai-resume-screening-system/
 
 ---
 
-# ⚙️ Installation
+# Installation
 
-## 1️⃣ Clone the Repository
+## Clone the Repository
 
 ```bash
 git clone https://github.com/vikas468368-star/Resume.git
 ```
 
-## 2️⃣ Open the Project
+## Open the Project
 
 ```bash
 cd Resume
 ```
 
-## 3️⃣ Create a Virtual Environment
+## Create a Virtual Environment
 
 ### Windows
 
@@ -251,7 +251,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-## 4️⃣ Install Dependencies
+## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -259,7 +259,7 @@ pip install -r requirements.txt
 
 ---
 
-# ▶️ Running the Application
+# Running the Application
 
 Start the backend using the command configured for your project.
 
@@ -279,43 +279,41 @@ If your project uses a different entry point, replace the command with the one d
 
 ---
 
-# 🔄 Application Workflow
+# Application Workflow
 
 ### Step 1 — Upload Resume
 
 The recruiter/candidate uploads a resume.
 
-⬇️
+
 
 ### Step 2 — Extract Information
 
 The system processes the resume and extracts usable text.
 
-⬇️
+
 
 ### Step 3 — NLP Processing
 
 The extracted content is cleaned and processed using NLP techniques.
 
-⬇️
+
 
 ### Step 4 — Extract Relevant Information
 
 Important resume information such as skills, education and experience can be identified.
 
-⬇️
+
 
 ### Step 5 — Analyze Job Description
 
 The required qualifications and skills from the job description are processed.
 
-⬇️
 
 ### Step 6 — Match Candidate
 
 The resume is compared with the job requirements.
 
-⬇️
 
 ### Step 7 — Generate Results
 
@@ -323,31 +321,31 @@ The system presents the screening/matching information to the user.
 
 ---
 
-# 🎯 Use Cases
+#  Use Cases
 
-### 👨‍💼 Recruitment Teams
+###  Recruitment Teams
 
 Assist recruiters during initial resume screening.
 
-### 🏢 HR Departments
+### HR Departments
 
 Process large numbers of applications more efficiently.
 
-### 🎓 Campus Recruitment
+### Campus Recruitment
 
 Help organize and analyze student applications.
 
-### 🚀 Startups
+###  Startups
 
 Reduce repetitive manual resume-review work during hiring campaigns.
 
-### 💼 Recruitment Agencies
+###  Recruitment Agencies
 
 Support structured candidate analysis across multiple job descriptions.
 
 ---
 
-# 📊 AI Screening Pipeline
+# AI Screening Pipeline
 
 ```text
 Resume
@@ -379,7 +377,7 @@ Candidate Analysis
 
 ---
 
-# 🔐 Responsible AI Considerations
+#  Responsible AI Considerations
 
 Resume screening involves sensitive employment-related information. AI-generated screening results should therefore be treated as **decision-support information rather than an automatic hiring decision**.
 
@@ -395,27 +393,27 @@ Recommended safeguards include:
 
 ---
 
-# 🚀 Future Enhancements
+# Future Enhancements
 
 The project can be extended with:
 
-- 🤖 Large Language Model integration
-- 📑 DOCX resume support
-- 🔍 Advanced semantic search
-- 🧠 Improved skill extraction
-- 📊 Recruiter analytics dashboard
-- 📈 Candidate comparison
-- 📧 Automated recruiter notifications
-- 📝 AI-generated candidate summaries
-- 🔐 Authentication and role management
-- ☁️ Cloud deployment
-- 🐳 Docker support
-- 📱 Responsive mobile interface
-- 📋 Exportable screening reports
+-  Large Language Model integration
+-  DOCX resume support
+-  Advanced semantic search
+-  Improved skill extraction
+-  Recruiter analytics dashboard
+-  Candidate comparison
+-  Automated recruiter notifications
+-  AI-generated candidate summaries
+-  Authentication and role management
+-  Cloud deployment
+-  Docker support
+-  Responsive mobile interface
+-  Exportable screening reports
 
 ---
 
-# 📸 Screenshots
+#  Screenshots
 
 Add your project screenshots here:
 
@@ -447,23 +445,23 @@ Then use:
 
 ---
 
-# 🎨 README Visual Style
+#  README Visual Style
 
 This README uses GitHub-compatible visual elements such as:
 
-- ✨ Animated typing header
-- 🌈 Colorful badges
-- 💎 Emoji-based sections
-- 📊 Architecture diagrams
-- 🧩 Structured tables
-- 🎯 Visual workflow
-- 📸 Screenshot gallery
+-  Animated typing header
+-  Colorful badges
+-  Emoji-based sections
+-  Architecture diagrams
+-  Structured tables
+-  Visual workflow
+-  Screenshot gallery
 
 For actual animated backgrounds, GitHub README files generally require an external **GIF/SVG asset** rather than arbitrary CSS or JavaScript.
 
 ---
 
-# 📌 Project Highlights
+#  Project Highlights
 
 ```text
                 AI
@@ -495,7 +493,7 @@ For actual animated backgrounds, GitHub README files generally require an extern
 
 ---
 
-# 👨‍💻 Developer
+#  Developer
 
 <div align="center">
 
@@ -519,7 +517,7 @@ AI / ML • Python • NLP • Web Development
 
 <div align="center">
 
-### 🚀 AI • NLP • Machine Learning • Recruitment
+###  AI • NLP • Machine Learning • Recruitment
 
 **Building intelligent tools for the future of hiring.**
 
